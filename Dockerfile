@@ -29,6 +29,9 @@ WORKDIR /root/
 COPY --from=builder /app/erpc-server .
 COPY --from=builder /app/erpc-server-pprof .
 
+# Copy the config file
+COPY erpc.yaml .
+
 # 8080 -> erpc
 # 6060 -> pprof (optional)
 EXPOSE 8080 6060
