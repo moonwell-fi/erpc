@@ -108,7 +108,9 @@ func (u *Upstream) prepareRequest(normalizedReq *common.NormalizedRequest) error
 	switch cfg.Type {
 	case common.UpstreamTypeEvm,
 		common.UpstreamTypeEvmAlchemy,
+		common.UpstreamTypeEvmThirdweb,
 		common.UpstreamTypeEvmEnvio,
+		common.UpstreamTypeEvmEtherspot,
 		common.UpstreamTypeEvmPimlico:
 		if u.Client == nil {
 			return common.NewErrJsonRpcExceptionInternal(
@@ -122,8 +124,10 @@ func (u *Upstream) prepareRequest(normalizedReq *common.NormalizedRequest) error
 
 		if u.Client.GetType() == ClientTypeHttpJsonRpc ||
 			u.Client.GetType() == ClientTypeAlchemyHttpJsonRpc ||
+			u.Client.GetType() == ClientTypeThirdwebHttpJsonRpc ||
 			u.Client.GetType() == ClientTypeEnvioHttpJsonRpc ||
-			u.Client.GetType() == ClientTypePimlicoHttpJsonRpc {
+			u.Client.GetType() == ClientTypePimlicoHttpJsonRpc ||
+			u.Client.GetType() == ClientTypeEtherspotHttpJsonRpc {
 			jsonRpcReq, err := normalizedReq.JsonRpcRequest()
 			if err != nil {
 				return common.NewErrJsonRpcExceptionInternal(
@@ -236,7 +240,9 @@ func (u *Upstream) Forward(ctx context.Context, req *common.NormalizedRequest) (
 	switch clientType {
 	case ClientTypeHttpJsonRpc,
 		ClientTypeAlchemyHttpJsonRpc,
+		ClientTypeThirdwebHttpJsonRpc,
 		ClientTypeEnvioHttpJsonRpc,
+		ClientTypeEtherspotHttpJsonRpc,
 		ClientTypePimlicoHttpJsonRpc:
 		jsonRpcClient, okClient := u.Client.(HttpJsonRpcClient)
 		if !okClient {
@@ -522,12 +528,20 @@ func (u *Upstream) guessUpstreamType() error {
 		cfg.Type = common.UpstreamTypeEvmAlchemy
 		return nil
 	}
+	if strings.HasPrefix(cfg.Endpoint, "thirdweb://") || strings.HasPrefix(cfg.Endpoint, "evm+thirdweb://") {
+		cfg.Type = common.UpstreamTypeEvmThirdweb
+		return nil
+	}
 	if strings.HasPrefix(cfg.Endpoint, "envio://") || strings.HasPrefix(cfg.Endpoint, "evm+envio://") {
 		cfg.Type = common.UpstreamTypeEvmEnvio
 		return nil
 	}
 	if strings.HasPrefix(cfg.Endpoint, "pimlico://") || strings.HasPrefix(cfg.Endpoint, "evm+pimlico://") {
 		cfg.Type = common.UpstreamTypeEvmPimlico
+		return nil
+	}
+	if strings.HasPrefix(cfg.Endpoint, "etherspot://") || strings.HasPrefix(cfg.Endpoint, "evm+etherspot://") {
+		cfg.Type = common.UpstreamTypeEvmEtherspot
 		return nil
 	}
 

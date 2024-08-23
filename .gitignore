@@ -8,4 +8,6 @@ vendor/
 *.cover
 coverage.txt
 .DS_Store
+.generated-go-semantic-release-changelog.md
+.semrel/
 bin/

@@ -6,8 +6,10 @@ An upstream is defined to handle 1 or more networks (a.k.a. chains). There are c
 
 - [`evm`](#evm-json-rpc) A generic EVM-compatible JSON-RPC endpoint. This is the default and most-used type.
 - [`alchemy`](#alchemy-json-rpc) A special upstream type that accepts Alchemy API-KEY and automatically adds all their EVM chains.
+- [`thirdweb`](#thirdweb-json-rpc) A special upstream type that accepts Thirdweb API-KEY and automatically adds all their EVM chains.
 - [`envio`](#envio-json-rpc) A special upstream type for Envio HyperRPC endpoint and automatically adds all chains by HyperRPC.
 - [`pimlico`](#pimlico-json-rpc) A special upstream type for Pimlico account-abstraction (ERC-4337) support.
+- [`etherspot`](#etherspot-json-rpc) A special upstream type for Etherspot account-abstraction (ERC-4337) support.
 
 <Callout type='info'>
   eRPC supports any EVM-compatible JSON-RPC endpoint when using `evm` type. Specialized types like "evm+alchemy" are built for well-known providers to make it easier to import "all supported evm chains" with just an API-KEY.
@@ -139,6 +141,21 @@ projects:
         # ...
 ```
 
+### `thirdweb` JSON-RPC
+
+This upstream type is built specially for [Thirdweb](https://thirdweb.com/chainlist) 3rd-party provider to make it easier to import "all supported evm chains" with just a CLIENT-ID.
+
+```yaml filename="erpc.yaml"
+# ...
+projects:
+  - id: main
+    # ...
+    upstreams:
+      - id: my-thirdweb
+        endpoint: thirdweb://YOUR_THIRDWEB_CLIENT_ID
+        # ...
+```
+
 ### `envio` JSON-RPC
 
 Envio [HyperRPC](https://docs.envio.dev/docs/HyperSync/hyperrpc-supported-networks) service provides a higher-performance alternative for certain read methods. When handling requests if a [method is supported by HyperRPC](https://docs.envio.dev/docs/HyperSync/overview-hyperrpc), then this upstream may be used.
@@ -172,6 +189,23 @@ projects:
         endpoint: pimlico://public
         # Or provide your API-KEY as:
         # endpoint: pimlico://xxxxxmy-api-key
+        # ...
+```
+
+### `etherspot` JSON-RPC
+
+[Etherspot](https://etherspot.io/) adds account-abstraction (ERC-4337) support to your eRPC instance. With this upstream added when a AA-related request arrives it'll be forwarded to Etherspot, which allows you to use the same RPC endpoint for both usual eth_* methods along with ERC-4337 methods.
+
+```yaml filename="erpc.yaml"
+# ...
+projects:
+  - id: main
+    # ...
+    upstreams:
+      - id: etherspot-public
+        endpoint: etherspot://public
+        # Or provide your API-KEY as:
+        # endpoint: etherspot://xxxxxmy-api-key
         # ...
 ```
 
