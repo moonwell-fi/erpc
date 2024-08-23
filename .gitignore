@@ -8,6 +8,5 @@ vendor/
 *.cover
 coverage.txt
 .DS_Store
-erpc.yaml
 .generated-go-semantic-release-changelog.md
 .semrel/
